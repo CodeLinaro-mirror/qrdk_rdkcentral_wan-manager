@@ -636,11 +636,12 @@ Client_GetParamIntValue
     /* check the parameter name and return the corresponding value */
     if (strcmp(ParamName, "LeaseTimeRemaining") == 0)
     {
+CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
         /* collect value */
         WanMgr_DmlDhcpcGetInfo(NULL, pCxtLink->InstanceNumber, &pDhcpc->Info);
-        
+        CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
         *pInt   = pDhcpc->Info.LeaseTimeRemaining;
-        
+        CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
         return TRUE;
     }
 
@@ -877,14 +878,17 @@ Client_GetParamStringValue
 
 	else if (strcmp(ParamName, "IPRouters") == 0)
     {
+CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
         /* collect value */
         WanMgr_DmlDhcpcGetInfo(NULL, pCxtLink->InstanceNumber, &pDhcpc->Info);
+CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
         if ( pDhcpc->Info.DHCPStatus != DML_DHCPC_STATUS_Bound && (strlen(_ansc_inet_ntoa(*((struct in_addr *)(&pDhcpc->Info.IPRouters[0])))) == 0))
         {
             *pValue    = '\0';
+            CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
             return 0;
         }
-        
+        CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
         AnscZeroMemory(tmpBuff, sizeof(tmpBuff));
         for( i=0; i<pDhcpc->Info.NumIPRouters && i<DML_DHCP_MAX_ENTRIES; i++)
         {
@@ -895,18 +899,20 @@ Client_GetParamStringValue
           
             AnscCopyString( &tmpBuff[len], _ansc_inet_ntoa(*((struct in_addr *)(&pDhcpc->Info.IPRouters[i]))) );
         }
-        
+        CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
         if ( AnscSizeOfString(tmpBuff) < *pUlSize)
         {
             AnscCopyString(pValue, tmpBuff);
+CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
             return 0;
         }
         else
         {
             *pUlSize = AnscSizeOfString(pDhcpc->Cfg.Interface)+1;
+CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
             return 1;
         }
-
+CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
         return 0;
     }
 

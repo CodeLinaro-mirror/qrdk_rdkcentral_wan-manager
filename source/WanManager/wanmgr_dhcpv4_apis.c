@@ -769,6 +769,7 @@ WanMgr_DmlDhcpcGetInfo
         PDML_DHCPC_INFO        pInfo
     )
 {
+CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
     UNREFERENCED_PARAMETER(hContext);
     ANSC_STATUS  rc;
 
@@ -777,8 +778,9 @@ WanMgr_DmlDhcpcGetInfo
     }
 
     pInfo->Status = DML_DHCP_STATUS_Enabled;
-
+CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
     DML_VIRTUAL_IFACE *p_VirtIf = WanMgr_GetActiveVirtIfData_locked();
+CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
     if(p_VirtIf != NULL)
     {
         pInfo->IPAddress.Value     = inet_addr(p_VirtIf->IP.Ipv4Data.ip);
@@ -786,7 +788,7 @@ WanMgr_DmlDhcpcGetInfo
         pInfo->IPRouters[0].Value  = inet_addr(p_VirtIf->IP.Ipv4Data.gateway);
         pInfo->DNSServers[0].Value = inet_addr(p_VirtIf->IP.Ipv4Data.dnsServer);
         pInfo->DNSServers[1].Value = inet_addr(p_VirtIf->IP.Ipv4Data.dnsServer1);
-
+CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
         pInfo->DHCPServer.Value = inet_addr(p_VirtIf->IP.Ipv4Data.dhcpServerId);
 	pInfo->DHCPStatus = ((strcmp(p_VirtIf->IP.Ipv4Data.dhcpState, DHCP_STATE_BOUND) == 0) || 
                        (strcmp(p_VirtIf->IP.Ipv4Data.dhcpState, DHCP_STATE_RENEW) == 0)) ? DML_DHCPC_STATUS_Bound : DML_DHCPC_STATUS_Init;
@@ -798,11 +800,14 @@ WanMgr_DmlDhcpcGetInfo
         {
             pInfo->LeaseTimeRemaining = 0;
         }    
+CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
         WanMgrDml_GetIfaceData_release(NULL);
+CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
     }
-
+CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
     pInfo->NumDnsServers = 2;
     pInfo->NumIPRouters = 1;
+CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
     return ANSC_STATUS_SUCCESS;
 }
 
@@ -816,6 +821,7 @@ WanMgr_DmlDhcpcGetInfo
         PDML_DHCPC_INFO        pInfo
     )
 {
+CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
     UNREFERENCED_PARAMETER(hContext);
         ULONG i;
         dhcpv4c_ip_list_t ad;
@@ -823,15 +829,20 @@ WanMgr_DmlDhcpcGetInfo
     if ( (!pInfo) || (ulInstanceNumber != 1) ){
         return ANSC_STATUS_FAILURE;
     }
-
+CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
         pInfo->Status = DML_DHCP_STATUS_Enabled;
         dhcpv4c_get_ert_fsm_state((int*)&pInfo->DHCPStatus);
+CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
         dhcpv4c_get_ert_ip_addr((unsigned int*)&pInfo->IPAddress.Value);
+CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
         dhcpv4c_get_ert_mask((unsigned int*)&pInfo->SubnetMask.Value);
+CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
         pInfo->NumIPRouters = 1;
         dhcpv4c_get_ert_gw((unsigned int*)&pInfo->IPRouters[0].Value);
+CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
         ad.number = 0;
         dhcpv4c_get_ert_dns_svrs(&ad);
+CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
         pInfo->NumDnsServers = ad.number;
     if (pInfo->NumDnsServers > DML_DHCP_MAX_ENTRIES)
     {
@@ -840,16 +851,20 @@ WanMgr_DmlDhcpcGetInfo
     }
         for(i=0; i< pInfo->NumDnsServers;i++)
                 pInfo->DNSServers[i].Value = ad.addrs[i];
+CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
     if (pInfo->DHCPStatus == DML_DHCPC_STATUS_Bound)
     {
+CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
         dhcpv4c_get_ert_remain_lease_time((unsigned int*)&pInfo->LeaseTimeRemaining);
+CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
     }
     else 
     {
         pInfo->LeaseTimeRemaining = 0;
     }   
+CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
         dhcpv4c_get_ert_dhcp_svr((unsigned int*)&pInfo->DHCPServer);
-
+CcspTraceInfo(("%s %d - Trace \n", __FUNCTION__, __LINE__));
     return ANSC_STATUS_SUCCESS;
 }
 #endif
