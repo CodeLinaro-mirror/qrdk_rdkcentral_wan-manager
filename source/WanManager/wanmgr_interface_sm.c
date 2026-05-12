@@ -3180,15 +3180,16 @@ static eWanState_t wan_transition_map_up(WanMgr_IfaceSM_Controller_t* pWanIfaceC
 
         CcspTraceInfo(("%s %d - net.ipv4.ip_forward set to 1 \n", __FUNCTION__, __LINE__));
         v_secure_system("sysctl -w net.ipv4.ip_forward=1");
-
+CcspTraceInfo(("%s %d Trace \n", __FUNCTION__, __LINE__));
         if (WanManager_ProcessMAPTConfiguration(&(p_VirtIf->MAP.dhcp6cMAPparameters), &(p_VirtIf->MAP.MaptConfig), pInterface->Name, p_VirtIf->IP.Ipv6Data.ifname) != RETURN_OK)
         {
             CcspTraceError(("%s %d - Error processing MAP-T Parameters \n", __FUNCTION__, __LINE__));
             return p_VirtIf->eCurrentState;
         }
-
+CcspTraceInfo(("%s %d Trace \n", __FUNCTION__, __LINE__));
         sysevent_set(sysevent_fd, sysevent_token, SYSEVENT_FIREWALL_RESTART, NULL, 0);
         wanmgr_services_restart();
+        CcspTraceInfo(("%s %d Trace \n", __FUNCTION__, __LINE__));
 #endif
     }
     else if (p_VirtIf->MAP.dhcp6cMAPparameters.mapType == MAP_TYPE_MAPE)
@@ -4463,19 +4464,22 @@ static eWanState_t wan_state_map_active(WanMgr_IfaceSM_Controller_t* pWanIfaceCt
 #if defined(FEATURE_MAPT)
     else if (p_VirtIf->MAP.MaptChanged == TRUE)
     {
+        CcspTraceInfo(("%s %d Trace \n", __FUNCTION__, __LINE__));
         if (wan_tearDownMapt() == RETURN_OK)
         {
             if (WanManager_ResetMAPTConfiguration(pInterface->Name, p_VirtIf->Name) != RETURN_OK)
             {
                 CcspTraceError(("%s %d Error resetting MAP-T configuration", __FUNCTION__, __LINE__));
             }
-
+CcspTraceInfo(("%s %d Trace \n", __FUNCTION__, __LINE__));
             if (wan_setUpMapt() == RETURN_OK)
             {
                 memset(&(p_VirtIf->MAP.MaptConfig), 0, sizeof(WANMGR_MAPT_CONFIG_DATA));
+                CcspTraceInfo(("%s %d Trace \n", __FUNCTION__, __LINE__));
                 if (WanManager_VerifyMAPTConfiguration(&(p_VirtIf->MAP.dhcp6cMAPparameters), &(p_VirtIf->MAP.MaptConfig)) == ANSC_STATUS_SUCCESS)
                 {
                     CcspTraceInfo(("%s %d - MAPT Configuration verification success \n", __FUNCTION__, __LINE__));
+                    CcspTraceInfo(("%s %d Trace \n", __FUNCTION__, __LINE__));
                     if (WanManager_ProcessMAPTConfiguration(&(p_VirtIf->MAP.dhcp6cMAPparameters), &(p_VirtIf->MAP.MaptConfig), pInterface->Name, p_VirtIf->IP.Ipv6Data.ifname) == RETURN_OK)
                     {
                         p_VirtIf->MAP.MaptChanged = FALSE;
@@ -4485,6 +4489,7 @@ static eWanState_t wan_state_map_active(WanMgr_IfaceSM_Controller_t* pWanIfaceCt
                     {
                         CcspTraceError(("%s %d - Failed to configure MAP-T for %s Interface \n", __FUNCTION__, __LINE__, p_VirtIf->Name));
                     }
+                    CcspTraceInfo(("%s %d Trace \n", __FUNCTION__, __LINE__));
                 }
                 else
                 {
@@ -4500,6 +4505,7 @@ static eWanState_t wan_state_map_active(WanMgr_IfaceSM_Controller_t* pWanIfaceCt
         {
             CcspTraceError(("%s %d - Failed to tear down MAP-T for %s Interface \n", __FUNCTION__, __LINE__, p_VirtIf->Name));
         }
+        CcspTraceInfo(("%s %d Trace \n", __FUNCTION__, __LINE__));
     }
 #endif
     else if (p_VirtIf->IP.Ipv6Renewed == TRUE)
@@ -4507,10 +4513,10 @@ static eWanState_t wan_state_map_active(WanMgr_IfaceSM_Controller_t* pWanIfaceCt
         WanMgr_SendMsgTo_ConnectivityCheck(pWanIfaceCtrl, CONNECTION_MSG_IPV6 , TRUE);
         p_VirtIf->IP.Ipv6Renewed = FALSE;
     }
-
+CcspTraceInfo(("%s %d Trace \n", __FUNCTION__, __LINE__));
     // Start DHCP apps if not started
     WanMgr_MonitorDhcpApps(pWanIfaceCtrl);
-
+CcspTraceInfo(("%s %d Trace \n", __FUNCTION__, __LINE__));
     WanMgr_CheckDefaultRA(p_VirtIf);
 #if defined(FEATURE_IPOE_HEALTH_CHECK) && defined(IPOE_HEALTH_CHECK_LAN_SYNC_SUPPORT)
     if(lanState == LAN_STATE_STOPPED)
@@ -4524,6 +4530,7 @@ static eWanState_t wan_state_map_active(WanMgr_IfaceSM_Controller_t* pWanIfaceCt
         lanState = LAN_STATE_RESET;
     }
 #endif
+CcspTraceInfo(("%s %d Trace \n", __FUNCTION__, __LINE__));
     return WAN_STATE_MAP_ACTIVE;
 }
 
